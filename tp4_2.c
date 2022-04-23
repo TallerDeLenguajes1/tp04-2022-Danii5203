@@ -9,6 +9,8 @@ typedef struct{
     int duracion;
 }tarea;
 
+tarea* buscarTareaPorPalabra(tarea **Tarea, int cantTareas, char *palabraClave);
+
 int main(){
     srand(time(NULL)); //Instrucción que inicializa el generador de números aleatorios
 
@@ -49,6 +51,24 @@ int main(){
         printf("%d\n", tareasPendientes[i]->duracion);
     }
     free(buff);
+
+    //Buscar tarea por palabra clave
+    tarea *tareaPorPalabra;
+    char *palabraClave = (char *) malloc(sizeof(char) * 100);
+    tareaPorPalabra = (tarea*) malloc(sizeof(tarea));
+    printf("Ingrese una palabra clave de la tarea que quiera buscar: ");
+    gets(palabraClave);
+    tareaPorPalabra = buscarTareaPorPalabra(tareasPendientes, cantTareas, palabraClave);
+    if(tareaPorPalabra != 0){
+        printf("\nTarea Encontrada: \n");
+        printf("Tarea ID: %d\n", tareaPorPalabra->tareaID);
+        printf("Descripcion: ");
+        puts(tareaPorPalabra->descripcion);
+        printf("Duracion: %d\n", tareaPorPalabra->duracion);
+    }else{
+        printf("No se encontro la tarea con la palabra '%s'.\n", *palabraClave);
+    }
+    free(palabraClave);
 
     //Cargamos las tareas realizadas
     char respuesta;
@@ -100,4 +120,12 @@ int main(){
 
     return 0;
 }
-        
+
+tarea* buscarTareaPorPalabra(tarea **Tarea, int cantTareas, char *palabraClave){
+    for(int i=0; i<cantTareas; i++){
+        if(strstr(Tarea[i]->descripcion, palabraClave)){
+            return Tarea[i];
+        }
+    }
+    return 0;
+}
