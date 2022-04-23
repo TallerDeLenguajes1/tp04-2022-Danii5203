@@ -9,6 +9,8 @@ typedef struct{
     int duracion;
 }tarea;
 
+tarea* buscarTareaPorID(tarea **Tarea, int cantTareas, int tareaId);
+
 int main(){
     srand(time(NULL)); //Instrucción que inicializa el generador de números aleatorios
 
@@ -39,6 +41,23 @@ int main(){
         tareasPendientes[i]->descripcion = (char *) malloc(sizeof(char) * (strlen(buff)+1)); //reservo memoria para cargar la descripcion
         strcpy(tareasPendientes[i]->descripcion, buff); //paso del auxiliar a la descr. de la tarea
         tareasPendientes[i]->duracion = (rand()%90)+10;   
+    }
+
+    //Buscar tarea por ID
+    tarea *tareaID;
+    int IDBuscar;
+    tareaID = (tarea*) malloc(sizeof(tarea));
+    printf("Ingrese el id que quiera buscar: ");
+    scanf("%d", &IDBuscar);
+    tareaID = buscarTareaPorID(tareasPendientes, cantTareas, IDBuscar);
+    if(tareaID != 0){
+        printf("\nTarea Encontrada: \n");
+        printf("Tarea ID: %d\n", tareaID->tareaID);
+        printf("Descripcion: ");
+        puts(tareaID->descripcion);
+        printf("Duracion: %d\n", tareaID->duracion);
+    }else{
+        printf("No se encontro la tarea con id %d.\n", IDBuscar);
     }
 
     //Listamos tareas realizadas
@@ -99,5 +118,14 @@ int main(){
     free(tareasRealizadas);
 
     return 0;
+}
+
+tarea* buscarTareaPorID(tarea **Tarea, int cantTareas, int tareaId){
+    for(int i=0; i<cantTareas; i++){
+        if(Tarea[i]->tareaID == tareaId){ //verificamos si la tarea en la que estamos parado tiene la misma id que el id que mandamos a buscar
+            return Tarea[i]; //retorna una tarea
+        }
+    }
+    return 0; //retorna 0 que seria nuestro valor "false"
 }
         
