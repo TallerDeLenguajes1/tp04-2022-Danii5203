@@ -10,6 +10,7 @@ typedef struct{
 }tarea;
 
 tarea* buscarTareaPorPalabra(tarea **Tarea, int cantTareas, char *palabraClave);
+tarea* buscarTareaPorID(tarea **Tarea, int cantTareas, int tareaId);
 
 int main(){
     srand(time(NULL)); //Instrucción que inicializa el generador de números aleatorios
@@ -43,6 +44,7 @@ int main(){
         tareasPendientes[i]->duracion = (rand()%90)+10;   
     }
 
+
     //Listamos tareas realizadas
     for(int i=0; i<cantTareas; i++){
         printf("\nTarea %d -----------------------------------------------\n", tareasPendientes[i]->tareaID);
@@ -70,6 +72,23 @@ int main(){
     }
     free(palabraClave);
 
+    //Buscar tarea por ID
+    tarea *tareaID;
+    int IDBuscar;
+    tareaID = (tarea*) malloc(sizeof(tarea));
+    printf("Ingrese el id que quiera buscar: ");
+    scanf("%d", &IDBuscar);
+    tareaID = buscarTareaPorID(tareasPendientes, cantTareas, IDBuscar);
+    if(tareaID != 0){
+        printf("\nTarea Encontrada: \n");
+        printf("Tarea ID: %d\n", tareaID->tareaID);
+        printf("Descripcion: ");
+        puts(tareaID->descripcion);
+        printf("Duracion: %d\n", tareaID->duracion);
+    }else{
+        printf("No se encontro la tarea con id %d.\n", IDBuscar);
+    }
+    
     //Cargamos las tareas realizadas
     char respuesta;
     for(int i=0; i<cantTareas; i++){
@@ -128,4 +147,13 @@ tarea* buscarTareaPorPalabra(tarea **Tarea, int cantTareas, char *palabraClave){
         }
     }
     return 0;
+}
+
+tarea* buscarTareaPorID(tarea **Tarea, int cantTareas, int tareaId){
+    for(int i=0; i<cantTareas; i++){
+        if(Tarea[i]->tareaID == tareaId){ //verificamos si la tarea en la que estamos parado tiene la misma id que el id que mandamos a buscar
+            return Tarea[i]; //retorna una tarea
+        }
+    }
+    return 0; //retorna 0 que seria nuestro valor "false"
 }
