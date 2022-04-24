@@ -43,6 +43,16 @@ int main(){
         tareasPendientes[i]->duracion = (rand()%90)+10;   
     }
 
+
+    //Listamos tareas realizadas
+    for(int i=0; i<cantTareas; i++){
+        printf("\nTarea %d -----------------------------------------------\n", tareasPendientes[i]->tareaID);
+        printf("%d\n", tareasPendientes[i]->tareaID);
+        puts(tareasPendientes[i]->descripcion);
+        printf("%d\n", tareasPendientes[i]->duracion);
+    }
+    free(buff);
+
     //Buscar tarea por ID
     tarea *tareaID;
     int IDBuscar;
@@ -59,16 +69,7 @@ int main(){
     }else{
         printf("No se encontro la tarea con id %d.\n", IDBuscar);
     }
-
-    //Listamos tareas realizadas
-    for(int i=0; i<cantTareas; i++){
-        printf("\nTarea %d -----------------------------------------------\n", tareasPendientes[i]->tareaID);
-        printf("%d\n", tareasPendientes[i]->tareaID);
-        puts(tareasPendientes[i]->descripcion);
-        printf("%d\n", tareasPendientes[i]->duracion);
-    }
-    free(buff);
-
+    
     //Cargamos las tareas realizadas
     char respuesta;
     for(int i=0; i<cantTareas; i++){
