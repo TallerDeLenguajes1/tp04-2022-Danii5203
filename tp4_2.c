@@ -9,13 +9,14 @@ typedef struct{
     int duracion;
 }tarea;
 
+//funciones
 tarea* buscarTareaPorPalabra(tarea **Tarea, int cantTareas, char *palabraClave);
 tarea* buscarTareaPorID(tarea **Tarea, int cantTareas, int tareaId);
 
 int main(){
     srand(time(NULL)); //Instrucción que inicializa el generador de números aleatorios
 
-    //Pedimos la cantidad de tareas
+    //Pedimos la cantidad de tareas 
     int cantTareas;
     printf("Ingrese la cantidad de tareas a cargar: ");
     scanf("%d", &cantTareas);
@@ -27,7 +28,7 @@ int main(){
     tarea **tareasRealizadas;
     tareasRealizadas = (tarea **) malloc(sizeof(tarea *) * cantTareas);
 
-    //Puntero auxiliar
+    //Puntero auxiliar para cargar la descripcion
     char *buff;
     buff = (char *) malloc(sizeof(char) * 100);
 
@@ -37,6 +38,7 @@ int main(){
         fflush(stdin);
         gets(buff);
         fflush(stdin);
+
         tareasPendientes[i] = (tarea *) malloc(sizeof(tarea)); //reservo memoria para cargar la tarea
         tareasPendientes[i]->tareaID = i+1;
         tareasPendientes[i]->descripcion = (char *) malloc(sizeof(char) * (strlen(buff)+1)); //reservo memoria para cargar la descripcion
@@ -45,7 +47,7 @@ int main(){
     }
 
 
-    //Listamos tareas realizadas
+    //Mostramos las tareas pendientes
     for(int i=0; i<cantTareas; i++){
         printf("\nTarea %d -----------------------------------------------\n", tareasPendientes[i]->tareaID);
         printf("%d\n", tareasPendientes[i]->tareaID);
@@ -56,12 +58,16 @@ int main(){
 
     //Buscar tarea por palabra clave
     tarea *tareaPorPalabra;
-    char *palabraClave = (char *) malloc(sizeof(char) * 100);
-    tareaPorPalabra = (tarea*) malloc(sizeof(tarea));
+
+    char *palabraClave = (char *) malloc(sizeof(char) * 100); //creamos un puntero con reserva de memoria dinamica para guardar la palabra que vamos a buscar en las tareas
+    tareaPorPalabra = (tarea*) malloc(sizeof(tarea)); //aqui guardaremos la tarea que nos encuentre con la funcion
+
     printf("Ingrese una palabra clave de la tarea que quiera buscar: ");
     gets(palabraClave);
-    tareaPorPalabra = buscarTareaPorPalabra(tareasPendientes, cantTareas, palabraClave);
-    if(tareaPorPalabra != 0){
+
+    tareaPorPalabra = buscarTareaPorPalabra(tareasPendientes, cantTareas, palabraClave); //mandamos a buscar la palabra en la funcion
+
+    if(tareaPorPalabra != 0){ //si nos devuelve una tarea la mostramos
         printf("\nTarea Encontrada: \n");
         printf("Tarea ID: %d\n", tareaPorPalabra->tareaID);
         printf("Descripcion: ");
@@ -74,12 +80,16 @@ int main(){
 
     //Buscar tarea por ID
     tarea *tareaID;
-    int IDBuscar;
-    tareaID = (tarea*) malloc(sizeof(tarea));
+    tareaID = (tarea*) malloc(sizeof(tarea)); //reservamos memoria para guardar la tarea que nos devuelva la funcion
+
+    int IDBuscar; //id que vamos a buscar
+
     printf("Ingrese el id que quiera buscar: ");
     scanf("%d", &IDBuscar);
-    tareaID = buscarTareaPorID(tareasPendientes, cantTareas, IDBuscar);
-    if(tareaID != 0){
+
+    tareaID = buscarTareaPorID(tareasPendientes, cantTareas, IDBuscar); //guardamos la tarea devuelta
+     
+    if(tareaID != 0){ //controlamos que si nos haya devuelto una tarea y la mostramos
         printf("\nTarea Encontrada: \n");
         printf("Tarea ID: %d\n", tareaID->tareaID);
         printf("Descripcion: ");
@@ -91,17 +101,20 @@ int main(){
     
     //Cargamos las tareas realizadas
     char respuesta;
+
     for(int i=0; i<cantTareas; i++){
         printf("\n- Realizo la tarea %d?", i+1);
         fflush(stdin);
         printf("\nDescripcion: %s\n", tareasPendientes[i]->descripcion);
         scanf("%c",&respuesta);
-        tareasRealizadas[i] = (tarea *) malloc(sizeof(tareasPendientes[i]));
-        if(respuesta == 's' || respuesta == 'S'){
-            tareasRealizadas[i] = tareasPendientes[i];
-            tareasPendientes[i] = NULL;
+
+        tareasRealizadas[i] = (tarea *) malloc(sizeof(tareasPendientes[i])); //reservamos memoria para guardar las tareas realizadas
+
+        if(respuesta == 's' || respuesta == 'S'){ //si realizo dicha tarea
+            tareasRealizadas[i] = tareasPendientes[i]; //la guardamos en el puntero doble
+            tareasPendientes[i] = NULL; //y hacemos que la tarea pendiente apunte a Null
         }else{
-            tareasRealizadas[i] = NULL;
+            tareasRealizadas[i] = NULL; //sino apunta a Null
         }
     }
 
@@ -134,6 +147,8 @@ int main(){
             free(tareasRealizadas[i]->descripcion);
         }
     }
+    free(tareaPorPalabra);
+    free(tareaID);
     free(tareasPendientes);
     free(tareasRealizadas);
 
@@ -141,12 +156,12 @@ int main(){
 }
 
 tarea* buscarTareaPorPalabra(tarea **Tarea, int cantTareas, char *palabraClave){
-    for(int i=0; i<cantTareas; i++){
-        if(strstr(Tarea[i]->descripcion, palabraClave)){
-            return Tarea[i];
+    for(int i=0; i<cantTareas; i++){ //buscamos en cada una de las tareas pendientes
+        if(strstr(Tarea[i]->descripcion, palabraClave)){ //si coincide la palabra con alguna de la descripcion
+            return Tarea[i]; //devuelve la tarea
         }
     }
-    return 0;
+    return 0; //si no encuentra ninguna retorna un 0
 }
 
 tarea* buscarTareaPorID(tarea **Tarea, int cantTareas, int tareaId){
@@ -155,5 +170,5 @@ tarea* buscarTareaPorID(tarea **Tarea, int cantTareas, int tareaId){
             return Tarea[i]; //retorna una tarea
         }
     }
-    return 0; //retorna 0 que seria nuestro valor "false"
+    return 0; //si no encuentra ninguna retorna un 0
 }
