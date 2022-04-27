@@ -23,6 +23,7 @@ void mostrarTareas(Nodo * tarea, int id);
 Nodo * cargarTareasRealizadas(Nodo * tareasPendientes, Nodo * tareasRealizadas, int id, int cantTareas);
 Nodo * borrarNodo(Nodo * lista, int id, int cantTareas);
 Nodo * buscarPorPalabra(Nodo * lista, int cantTareas, char *palabra);
+Nodo * buscarPorID(Nodo * lista, int cantTareas, int ID);
 void liberarMemoria(Nodo * lista);
 
 
@@ -79,6 +80,21 @@ int main(){
     }
     free(palabra);
 
+    //Buscar tarea por ID
+    char ID;
+    Nodo * tareaPorID = (Nodo *) malloc(sizeof(Nodo)); //reservo memoria para la palabra que me devuelva
+
+    printf("\nIngrese el ID de la tarea que desea buscar: ");
+    scanf("%d", &ID);
+
+    tareaPorID = buscarPorID(tareasPendientes, cantTareas, ID);
+    
+    if(tareaPorID != NULL){
+        mostrarTareas(tareaPorID, tareaPorID->T.TareaID);
+    }else{
+        printf("No se encontro la tarea con el id '%d'.\n", ID);
+    }
+
     //Cargamos las tareas realizadas
     Nodo * listaAux = tareasPendientes;
     char respuesta; //aqui guardaremos la respuesta de si realizo o no la tarea
@@ -124,6 +140,7 @@ int main(){
     liberarMemoria(tareasPendientes);
     liberarMemoria(tareasRealizadas);
     liberarMemoria(tareaPorPalabra);
+    liberarMemoria(tareaPorID);
 
    return 0;
 }
@@ -242,6 +259,18 @@ Nodo * buscarPorPalabra(Nodo * lista, int cantTareas, char *palabra){
     Nodo * listaAux = lista; //lista aux. para recorrer la lista
     for(int i=0; i<cantTareas; i++){
         if(strstr(listaAux->T.descripcion, palabra)){ //si encuentra la palabra en la descripcion de cierta tarea
+            return listaAux; //la devuelve
+        }
+        listaAux = listaAux->Siguiente; //avanzamos en la lista
+    }
+    return NULL; //en caso de que no encuentre una tarea devuelve un NULL
+}
+
+//Buscamos una tarea por ID
+Nodo * buscarPorID(Nodo * lista, int cantTareas, int ID){
+    Nodo * listaAux = lista; //lista aux. para recorrer la lista
+    for(int i=0; i<cantTareas; i++){
+        if(listaAux->T.TareaID == ID){ //si encuentra la tarea con la id que le pedimos
             return listaAux; //la devuelve
         }
         listaAux = listaAux->Siguiente; //avanzamos en la lista
