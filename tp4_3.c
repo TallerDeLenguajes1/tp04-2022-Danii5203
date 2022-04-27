@@ -22,7 +22,7 @@ Nodo * insertarTareaAlFinal(Nodo * listaTareas, Nodo * nuevaTarea);
 void mostrarTareas(Nodo * tarea, int id);
 Nodo * cargarTareasRealizadas(Nodo * tareasPendientes, Nodo * tareasRealizadas, int id, int cantTareas);
 Nodo * borrarNodo(Nodo * lista, int id, int cantTareas);
-
+Nodo * buscarPorPalabra(Nodo * lista, int cantTareas, char *palabra);
 void liberarMemoria(Nodo * lista);
 
 
@@ -60,6 +60,24 @@ int main(){
         Nodo * nuevaTarea = crearTarea(buff, i+1, entradaDuracion); //recibimos la tarea q creamos
         tareasPendientes = insertarTareaAlFinal(tareasPendientes, nuevaTarea); //recibimos la lista con el nodo nuevo insertado en el final
     }
+
+    //Buscar tarea por palabra
+    char *palabra = (char *) malloc(sizeof(char) * 100); //reservo memoria para la palabra clave
+    Nodo * tareaPorPalabra = (Nodo *) malloc(sizeof(Nodo)); //reservo memoria para la palabra que me devuelva
+
+    fflush(stdin);
+    printf("Ingrese la palabra clave de la tarea que desea buscar: ");
+    gets(palabra);
+    fflush(stdin);
+    
+    tareaPorPalabra = buscarPorPalabra(tareasPendientes, cantTareas, palabra); 
+
+    if(tareaPorPalabra != NULL){
+        mostrarTareas(tareaPorPalabra, tareaPorPalabra->T.TareaID);
+    }else{
+        printf("No se encontro la tarea con la palabra '%s'.\n", *palabra);
+    }
+    free(palabra);
 
     //Cargamos las tareas realizadas
     Nodo * listaAux = tareasPendientes;
@@ -105,6 +123,7 @@ int main(){
     free(listaAux);
     liberarMemoria(tareasPendientes);
     liberarMemoria(tareasRealizadas);
+    liberarMemoria(tareaPorPalabra);
 
    return 0;
 }
@@ -216,6 +235,18 @@ Nodo * borrarNodo(Nodo * lista, int id, int cantTareas){
     }
 
     return lista; //devolvemos la lista
+}
+
+//Buscamos una tarea por una palabra de su descripcion
+Nodo * buscarPorPalabra(Nodo * lista, int cantTareas, char *palabra){
+    Nodo * listaAux = lista; //lista aux. para recorrer la lista
+    for(int i=0; i<cantTareas; i++){
+        if(strstr(listaAux->T.descripcion, palabra)){ //si encuentra la palabra en la descripcion de cierta tarea
+            return listaAux; //la devuelve
+        }
+        listaAux = listaAux->Siguiente; //avanzamos en la lista
+    }
+    return NULL; //en caso de que no encuentre una tarea devuelve un NULL
 }
 
 //Liberamos memoria
