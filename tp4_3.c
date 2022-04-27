@@ -23,6 +23,9 @@ void mostrarTareas(Nodo * tarea, int id);
 Nodo * cargarTareasRealizadas(Nodo * tareasPendientes, Nodo * tareasRealizadas, int id, int cantTareas);
 Nodo * borrarNodo(Nodo * lista, int id, int cantTareas);
 
+void liberarMemoria(Nodo * lista);
+
+
 int main(){
     srand(time(NULL)); //Instrucción que inicializa el generador de números aleatorios
 
@@ -63,7 +66,7 @@ int main(){
     char respuesta; //aqui guardaremos la respuesta de si realizo o no la tarea
     for(int i=1; i<cantTareas+1; i++){
         if(listaAux != NULL){
-            printf("Realizo la tarea %d?(Descripcion: %s)\n- (Y / N): ", listaAux->T.TareaID, listaAux->T.descripcion);
+            printf("\nRealizo la tarea %d?(Descripcion: %s)\n- (Y / N): ", listaAux->T.TareaID, listaAux->T.descripcion);
             fflush(stdin);
             scanf("%c", &respuesta);
             fflush(stdin);
@@ -82,21 +85,26 @@ int main(){
     }
 
     //Mostramos las tareas pendientes y realizadas
+    listaAux = tareasPendientes;
     printf("\n------------------ Tareas pendientes ------------------\n");
-    while(tareasPendientes != NULL){
-        mostrarTareas(tareasPendientes, tareasPendientes->T.TareaID);
-        tareasPendientes = tareasPendientes->Siguiente;
+    while(listaAux != NULL){
+        mostrarTareas(listaAux, listaAux->T.TareaID);
+        listaAux = listaAux->Siguiente;
     }
     printf("\n------------------ Tareas realizadas ------------------\n");
-    while(tareasRealizadas != NULL){
-        mostrarTareas(tareasRealizadas, tareasRealizadas->T.TareaID);
-        tareasRealizadas = tareasRealizadas->Siguiente;
+    listaAux = tareasRealizadas;
+    while(listaAux != NULL){
+        mostrarTareas(listaAux, listaAux->T.TareaID);
+        listaAux = listaAux->Siguiente;
     }
     printf("\n");
+    
+    
     //Liberamos memoria
     free(buff);
     free(listaAux);
-    free(tareasPendientes);
+    liberarMemoria(tareasPendientes);
+    liberarMemoria(tareasRealizadas);
 
    return 0;
 }
@@ -208,4 +216,15 @@ Nodo * borrarNodo(Nodo * lista, int id, int cantTareas){
     }
 
     return lista; //devolvemos la lista
+}
+
+//Liberamos memoria
+void liberarMemoria(Nodo * lista){
+    Nodo * Aux; //Aux. que servira para apuntar a la lista para no perder la referencia
+    while(lista!=NULL){
+        Aux=lista; //asignamos la lista en el nodo que lo dejamos
+        lista=lista->Siguiente; //pasamos al siguiente nodo
+        free(Aux->T.descripcion); //Liberamos el espacio que pedimos para guardar la descripcion
+        free(Aux); //liberamos el nodo  
+    } 
 }
